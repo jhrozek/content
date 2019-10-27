@@ -1,4 +1,4 @@
-documentation_complete: true
+documentation_complete: false
 
 title: 'Open Computing Information Security Profile for OpenShift Node'
 
