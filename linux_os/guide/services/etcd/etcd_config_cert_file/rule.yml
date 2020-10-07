@@ -1,0 +1,21 @@
+prodtype: rhcos4
+
+title: None
+
+description: None
+
+rationale: TBD
+
+identifiers: {}
+
+severity: unknown
+
+template:
+    name: yamlfile_value
+    vars:
+        filepath: /etc/kubernetes/manifests/etcd-pod.yaml
+        yamlpath: ".spec.containers[:].command"
+        value: ".*"
+        negate: "false"
+        operation: "pattern match"
+
