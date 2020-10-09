@@ -62,9 +62,10 @@ warnings:
 template:
     name: yamlfile_value
     vars:
+        ocp_data: "true"
         filepath: '/api/v1/namespaces/openshift-kube-apiserver/configmaps/config'
         yamlpath: ".data['config.yaml']"
-        value: 'kubelet-read-only-port:\[\"0\"\]'
-        type: "string"
-        operation: "pattern match"
-        ocp_data: "true"
+        values:
+          - value: '.*kubelet-read-only-port:\["0"\].*'
+            type: "string"
+            operation: "pattern match"
