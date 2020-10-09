@@ -18,15 +18,11 @@ selections:
     - etcd_config_cert_file
 
   ### 4 Worker Nodes
-  ### TODO: Why is this worker nodes only, kubelet runs everywhere??
-  ###
   #### 4.1 Worker node configuration
   # 4.1.1 Ensure that the kubelet service file permissions are set to 644 or more restrictive
     - file_permissions_kubelet_service
-    # - TODO: remediation?
   # 4.1.2 Ensure that the kubelet service file ownership is set to root:root
     - file_ownership_kubelet_service
-    # - TODO: remediation?
   # 4.1.5 Ensure that the --kubeconfig kubelet.conf file permissions are set to 644 or more restrictive (Automated)
     # - create a rule based on file_permissions_kubelet_service that checks the perms of /etc/kubernetes/kubelet.conf
   # 4.1.6 Ensure that the --kubeconfig kubelet.conf file ownership is set to root:root
@@ -43,6 +39,8 @@ selections:
   #### 4.2 Kubelet
   # 4.2.1 Ensure that the --anonymous-auth argument is set to false
     - kubelet_anonymous_auth_disabled
+  # 4.2.2 Ensure that the --authorization-mode argument is not set to AlwaysAllow
+    # - this seems to be the default in the code, so the rule should verify that authorization.
   # 4.2.3 Ensure that the --client-ca-file argument is set as appropriate
     # - like kubelet_anonymous_auth_disabled but check for authentication.x509.clientCAFile=/etc/kubernetes/kubelet-ca.crt
   # 4.2.11 Ensure that the --rotate-certificates argument is not set to false
