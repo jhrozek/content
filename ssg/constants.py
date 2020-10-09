@@ -455,6 +455,7 @@ XCCDF_PLATFORM_TO_CPE = {
     "yum": "cpe:/a:yum",
     "zipl": "cpe:/a:zipl",
     "net-snmp": "cpe:/a:net-snmp",
+    "ocp4-node":   "cpe:/o:redhat:openshift_container_platform_node:4",
 }
 
 # Default platform to package mapping

@@ -20,13 +20,13 @@ selections:
   # 1.1.1 Ensure that the API server pod specification file permissions are set to 644 or more restrictive
     - file_permissions_kube_apiserver
   # 1.1.2 Ensure that the API server pod specification file ownership is set to root:root
-    - file_owner_kube_apiserver
-    - file_groupowner_kube_apiserver
+    #- file_owner_kube_apiserver
+    #- file_groupowner_kube_apiserver
   # 1.1.3 Ensure that the controller manager pod specification file permissions are set to 644 or more restrictive
-    - file_permissions_kube_controller_manager
+    #- file_permissions_kube_controller_manager
   # 1.1.4 Ensure that the controller manager pod specification file ownership is set to root:root
-    - file_owner_kube_controller_manager
-    - file_groupowner_kube_controller_manager
+    #- file_owner_kube_controller_manager
+    #- file_groupowner_kube_controller_manager
   # 1.1.5 Ensure that the scheduler pod specification file permissions are set to 644 or more restrictive
   # 1.1.6 Ensure that the scheduler pod specification file ownership is set to root:root
   # 1.1.7 Ensure that the etcd pod specification file permissions are set to 644 or more restrictive

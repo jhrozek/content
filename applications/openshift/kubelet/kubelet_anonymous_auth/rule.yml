@@ -1,6 +1,7 @@
 documentation_complete: true
 
 prodtype: ocp4
+platform: ocp4-node
 
 title: 'Disable Anonymous Authentication to the Kubelet'
 

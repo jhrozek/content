@@ -214,6 +214,10 @@ class Profile(object):
             add_sub_element(element, "reference", escape(self.reference))
 
         if self.platform:
+            print(PRODUCT_TO_CPE_MAPPING)
+            print(PRODUCT_TO_CPE_MAPPING.keys())
+            print(self.platform)
+            print(self.platform in PRODUCT_TO_CPE_MAPPING.keys())
             try:
                 cpes = PRODUCT_TO_CPE_MAPPING[self.platform]
             except KeyError:
@@ -316,6 +320,7 @@ class Profile(object):
 
     def validate_rules(self, rules, groups):
         existing_rule_ids = [r.id_ for r in rules]
+        print(existing_rule_ids)
         rule_selectors = self.get_rule_selectors()
         for id_ in rule_selectors:
             if id_ in groups:
