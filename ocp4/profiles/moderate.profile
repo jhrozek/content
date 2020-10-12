@@ -8,6 +8,8 @@ metadata:
 
 reference: https://nvd.nist.gov/800-53/Rev4/impact/moderate
 
+platform: ocp4
+
 title: 'NIST 800-53 Moderate-Impact Baseline for Red Hat OpenShift'
 
 description: |-
