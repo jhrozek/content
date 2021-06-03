@@ -38,6 +38,8 @@ description: |-
     consensus and release processes.
 
 selections:
+    # AC-2(5)
+    - oauth_or_oauthclient_inactivity_timeout
     # AC-2, AC-7
     - ocp_idp_no_htpasswd
 
