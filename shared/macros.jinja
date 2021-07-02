@@ -72,7 +72,13 @@ ocil: |
 
 
 {{% macro ocil_mount_option(point, option) -%}}
-    To verify the <tt>{{{ option }}}</tt> option is configured for the <tt>{{{ point }}}</tt> mount point, run the following command:
+    To verify the <tt>{{{ option }}}</tt> option is configured for the <tt>{{{ point }}}</tt> mount point,
+    {{% if product == "rhcos4" -%}}
+    You'll need to log into a node in the cluster.
+    {{{ rhcos_node_login_instructions() }}}
+    Subsequently,
+    {{%- endif -%}}
+    run the following command:
     <pre>$ mount | grep '\s{{{ point }}}\s'</pre>
     The output should show the corresponding mount point along with the <tt>{{{ option }}}</tt> setting in parentheses.
 {{%- endmacro %}}
@@ -131,6 +137,11 @@ ocil: |
 
 
 {{% macro partition_check(part) -%}}
+    {{% if product == "rhcos4" -%}}
+    You'll need to log into a node in the cluster.
+    {{{ rhcos_node_login_instructions() }}}
+    Subsequently,
+    {{%- endif -%}}
     Run the following command to determine if <code>{{{ part }}}</code>
     is on its own partition or logical volume:
     <pre>$ mount | grep "on {{{ part }}}"</pre>
@@ -699,12 +710,23 @@ ocil_clause: "{{{ sebool }}} is not enabled"
 
 
 {{% macro describe_mount(option, part) -%}}
+    {{% if product != "rhcos4" -%}}
     Add the <code>{{{ option }}}</code> option to the fourth column of
     <tt>/etc/fstab</tt> for the line which controls mounting of
     {{% if part.startswith('/') -%}}
         <code>{{{ part }}}</code>.
     {{%- else %}}
         {{{ part }}}.
+    {{%- endif %}}
+    {{%- else -%}}
+    Add the <code>{{{ option }}}</code> option to the list of
+    <code>Options</code> in the <code>systemd.mount</code> unit that
+    controls mounting of
+    {{% if part.startswith('/') -%}}
+        <code>{{{ part }}}</code>.
+    {{%- else %}}
+        {{{ part }}}.
+    {{%- endif %}}
     {{%- endif %}}
 {{%- endmacro %}}
 

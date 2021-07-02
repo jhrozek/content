@@ -4,8 +4,33 @@ title: 'Ensure /var/log Located On Separate Partition'
 
 description: |-
     System logs are stored in the <tt>/var/log</tt> directory.
+    {{% if product != "rhcos4" %}}
     Ensure that it has its own partition or logical
     volume at installation time, or migrate it using LVM.
+    {{% else %}}
+    <p>
+    Partitioning Red Hat CoreOS is a Day 1 operation and cannot
+    be changed afterwards. For documentation on how to add a
+    MachineConfig manifest that specifies a separate <tt>/var/log</tt>
+    partition, follow:
+    {{{ weblink(link="https://docs.openshift.com/container-platform/latest/installing/installing_platform_agnostic/installing-platform-agnostic.html#installation-user-infra-machines-advanced_disk_installing-platform-agnostic") }}}
+    </p>
+    <p>
+    Note that the in the Red Hat OpenShift documentation often references a block
+    device, such as <tt>/dev/vda</tt>. The name of the available block devices depends
+    on the underlying infrastructure (bare metal vs cloud), and often the specific
+    instance type. For example in AWS, some instance types have NVMe drives
+    (<tt>/dev/nvme*</tt>), others use <tt>/dev/xvda*</tt>.
+
+    You will need to look for relevant documentation for your infrastructure around this.
+    In many cases, the simplest thing is to boot a single machine with an Ignition
+    configuration that just gives you SSH access, and inspect the block devices via
+    e.g. the <tt>lsblk</tt> command.
+
+    For physical hardware, a good best practice is to reference devices via the
+    <tt>/dev/disk/by-id/</tt> or <tt>/dev/disk/by-path</tt> links.
+    </p>
+    {{% endif %}}
 
 rationale: |-
     Placing <tt>/var/log</tt> in its own partition
@@ -42,7 +67,12 @@ references:
 
 platform: machine
 
+# (jhrozek): at the moment, the mount probe checks the /proc filesystem
+# even if openscap looks at a chroot, which doesn't allow to check for
+# mount points when checking RHCOS4 via CO
+{{% if product != "rhcos4" %}}
 template:
     name: mount
     vars:
         mountpoint: /var/log
+{{% endif %}}

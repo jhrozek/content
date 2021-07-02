@@ -59,7 +59,7 @@ selections:
     #- partition_for_home
     #- partition_for_var
     #- mount_option_var_nodev
-    #- partition_for_var_log
+    - partition_for_var_log
     #- mount_option_var_log_nodev
     #- mount_option_var_log_nosuid
     #- mount_option_var_log_noexec
