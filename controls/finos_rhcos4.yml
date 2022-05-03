@@ -1,0 +1,106 @@
+policy: FINOS
+title: OpenShift Security Configuration (Service Accelerator)
+id: finos_rhcos4
+version: 2022-05-03
+source: https://github.com/finos/compliant-financial-infrastructure
+controls:
+- id: audit-capabilities
+  status: automated
+  notes: |-
+    Red Hat OpenShift enables auditing by default for the API Servers,
+    the OAuth server and the Linux hosts themselves. Auditing cannot
+    be turned off which makes the control inherently met.
+
+    The control asks for the following information to be audited:
+      - what type of event occurred (verb is logged)
+      - when the event occurred (timestamp is logged)
+      - where the event occurred (request stage, the physical location of the file)
+      - the source of the event (sourceIP, user are logged)
+      - the outcome of the event (responseStatus is logged)
+      - the identity of any individuals or subjects associated with
+        the event (user UUID is logged which can be correlated with the real
+        identity)
+
+    More documentation on what information Red Hat OpenShift audits can be found at:
+    https://docs.openshift.com/container-platform/4.7/security/audit-log-view.html
+    and:
+    https://docs.openshift.com/container-platform/4.7/security/audit-log-policy-config.html
+  rules:
+  - file_permissions_var_log_audit
+  - file_ownership_var_log_audit
+  - directory_permissions_var_log_audit
+  - directory_access_var_log_audit
+  - auditd_log_format
+  - auditd_name_format
+  - audit_rules_immutable
+  - package_audit_installed
+  - service_auditd_enabled
+  - coreos_audit_option
+  - var_auditd_space_left_action=syslog
+  - auditd_data_retention_space_left_action
+  - var_auditd_disk_error_action=syslog
+  - auditd_data_disk_error_action
+  - auditd_data_retention_space_left
+  - var_auditd_admin_space_left_action=syslog
+  - auditd_data_retention_admin_space_left_action
+  - var_auditd_max_log_file_action=rotate
+  - auditd_data_retention_max_log_file_action
+  - var_auditd_disk_full_action=syslog
+  - auditd_data_disk_full_action
+  # (jhrozek): unclear what audit rules do they need or want...
+  - audit_rules_kernel_module_loading_init
+  description: |-
+    Auditing of the host operating system consists of the standard auditing
+    capabilities provided by the auditd service in Red Hat Enterprise Linux
+    (RHEL) and Red Hat CoreOS (RHCOS). Audit is enabled by default in Red
+    Hat Enterprise Linux CoreOS (RHCOS); however, the audit subsystem is
+    running in a default configuration and without any audit rules. The
+    auditd configuration ( /etc/audit/auditd.conf ) file should be modified
+    as necessary to meet common organizational audit requirements such
+    as retention and fault tolerance. Additionally, audit rules must be
+    configured to record events.
+  title: >-
+    Examining Auditing Capabilities
+- id: fips
+  status: automated
+  notes: |-
+    FIPS mode can be enabled in OpenShift through a flag that
+    can be set at installation time [1]. Follow the relevant
+    documentation for the applicable cloud provider [2][3][4]
+    for more information. But note that this is also applicable
+    in on-prem deployments.
+
+    [1] https://docs.openshift.com/container-platform/latest/installing/installing-fips.html
+    [2] https://docs.openshift.com/container-platform/latest/installing/installing_aws/installing-aws-government-region.html#installation-configuration-parameters_installing-aws-government-region
+    [3] https://docs.openshift.com/container-platform/4.7/installing/installing_azure/installing-azure-customizations.html
+    [4] https://docs.openshift.com/container-platform/4.7/installing/installing_gcp/installing-gcp-customizations.html
+  rules:
+  - configure_ssh_crypto_policy
+  - var_system_crypto_policy=fips
+  - configure_crypto_policy
+  - configure_openssl_crypto_policy
+  - enable_fips_mode
+  description: |-
+    You can install an OpenShift Container Platform cluster that uses
+    FIPS Validated / Modules in Process cryptographic libraries on the
+    x86_64 architecture.
+    For the Red Hat Enterprise Linux CoreOS (RHCOS) machines in your
+    cluster, this change is applied when the machines are deployed based
+    on the status of an option in the install-config.yaml file, which
+    governs the cluster options that a user can change during cluster
+    deployment. With Red Hat Enterprise Linux (RHEL) machines, you must
+    enable FIPS mode when you install the operating system on the machines
+    that you plan to use as worker machines. These configuration methods
+    ensure that your cluster meet the requirements of a FIPS compliance
+    audit:
+      only FIPS Validated / Modules in Process cryptography packages
+      are enabled before the initial system boot.
+    Because FIPS must be enabled before the operating system that your
+    cluster uses boots for the first time, you cannot enable FIPS after
+    you deploy a cluster.
+    To install a cluster in FIPS mode, follow the instructions to install
+    a customized cluster on your preferred infrastructure. Ensure that
+    you set fips: true in the install-config.yaml file before you deploy
+    your cluster.
+  title: >-
+    Enable FIPS Compliance

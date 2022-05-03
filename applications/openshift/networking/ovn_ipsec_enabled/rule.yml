@@ -1,0 +1,41 @@
+prodtype: ocp4
+
+platform: ocp4-on-ovn
+
+title: "Enable IPsec for the OVN-Kubernetes network provider"
+
+description: |-
+    <p>
+    With IPsec enabled, all network traffic between nodes on the
+    OVN-Kubernetes Container Network Interface (CNI) cluster network
+    travels through an encrypted tunnel.
+    </p>
+    <p>
+    IPsec encryption can be enabled only during cluster installation and
+    cannot be disabled after it is enabled.
+    </p>
+    <p>
+    For more information on configuring IPSec on OVN, consult
+    {{{ weblink(link="https://docs.openshift.com/container-platform/4.10/installing/installing_bare_metal/installing-bare-metal-network-customizations.html#modifying-nwoperator-config-startup_installing-bare-metal-network-customizations",
+              text="the documentation") }}}
+    </p>
+
+rationale: |-
+  With IPsec enabled, all network Types of network traffic between nodes
+  on the OVN-Kubernetes Container Network Interface (CNI) cluster network
+  travels through an encrypted tunnel.
+
+#references:
+#  FINOS@ocp4: encryption-in-transit
+
+identifiers:
+    cce@ocp4: CCE-86320-9
+
+ocil_clause: 'IPSec is not configured'
+
+ocil: |-
+  To check if the IPsec is enabled, run the following command:
+  <pre>oc get daemonset.apps/ovn-ipsec -nopenshift-ovn-kubernetes</pre>
+  the output should return the daemonset.
+
+severity: high

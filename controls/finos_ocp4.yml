@@ -1,0 +1,195 @@
+policy: FINOS
+title: OpenShift Security Configuration (Service Accelerator)
+id: finos_ocp4
+version: 2022-05-03
+source: https://github.com/finos/compliant-financial-infrastructure
+controls:
+- id: audit-capabilities
+  status: automated
+  notes: |-
+    Red Hat OpenShift enables auditing by default for the API Servers,
+    the OAuth server and the Linux hosts themselves. Auditing cannot
+    be turned off which makes the control inherently met.
+
+    The control asks for the following information to be audited:
+      - what type of event occurred (verb is logged)
+      - when the event occurred (timestamp is logged)
+      - where the event occurred (request stage, the physical location of the file)
+      - the source of the event (sourceIP, user are logged)
+      - the outcome of the event (responseStatus is logged)
+      - the identity of any individuals or subjects associated with
+        the event (user UUID is logged which can be correlated with the real
+        identity)
+
+    More documentation on what information Red Hat OpenShift audits can be found at:
+    https://docs.openshift.com/container-platform/4.7/security/audit-log-view.html
+    and:
+    https://docs.openshift.com/container-platform/4.7/security/audit-log-policy-config.html
+  rules:
+  - directory_access_var_log_kube_audit
+  - var_openshift_audit_profile=WriteRequestBodies
+  - audit_profile_set
+  - directory_access_var_log_oauth_audit
+  - directory_access_var_log_ocp_audit
+  description: |-
+    Auditing at the OpenShift context consists of recording the HTTP requests made to the OpenShift API. The OpenShift API consists of two components:
+      1. The Kubernetes API server
+      2. The OpenShift API server
+    Both of these components provide an audit log, each recording
+    the events that have affected the system by individual users,
+    administrators, or other components of the system. OpenShift API audit
+    is enabled by default and is produced by both the kube-apiserver and
+    openshift-apiserver components. The audit configuration of each is
+    defined by a combination of default settings and corresponding custom
+    resources named KubeAPIServer and OpenShiftAPIServer, respectively. For
+    more information, consult the Kubernetes Auditing documentation
+    https://kubernetes.io/docs/tasks/debug-application-cluster/audit/.
+  title: >-
+    Examining Auditing Capabilities
+- id: fips
+  status: automated
+  notes: |-
+    FIPS mode can be enabled in OpenShift through a flag that
+    can be set at installation time [1]. Follow the relevant
+    documentation for the applicable cloud provider [2][3][4]
+    for more information. But note that this is also applicable
+    in on-prem deployments.
+
+    [1] https://docs.openshift.com/container-platform/latest/installing/installing-fips.html
+    [2] https://docs.openshift.com/container-platform/latest/installing/installing_aws/installing-aws-government-region.html#installation-configuration-parameters_installing-aws-government-region
+    [3] https://docs.openshift.com/container-platform/4.7/installing/installing_azure/installing-azure-customizations.html
+    [4] https://docs.openshift.com/container-platform/4.7/installing/installing_gcp/installing-gcp-customizations.html
+  rules:
+  - fips_mode_enabled
+  description: |-
+    You can install an OpenShift Container Platform cluster that uses
+    FIPS Validated / Modules in Process cryptographic libraries on the
+    x86_64 architecture.
+    For the Red Hat Enterprise Linux CoreOS (RHCOS) machines in your
+    cluster, this change is applied when the machines are deployed based
+    on the status of an option in the install-config.yaml file, which
+    governs the cluster options that a user can change during cluster
+    deployment. With Red Hat Enterprise Linux (RHEL) machines, you must
+    enable FIPS mode when you install the operating system on the machines
+    that you plan to use as worker machines. These configuration methods
+    ensure that your cluster meet the requirements of a FIPS compliance
+    audit:
+      only FIPS Validated / Modules in Process cryptography packages
+      are enabled before the initial system boot.
+    Because FIPS must be enabled before the operating system that your
+    cluster uses boots for the first time, you cannot enable FIPS after
+    you deploy a cluster.
+    To install a cluster in FIPS mode, follow the instructions to install
+    a customized cluster on your preferred infrastructure. Ensure that
+    you set fips: true in the install-config.yaml file before you deploy
+    your cluster.
+  title: >-
+    Enable FIPS Compliance
+- id: etcd-encryption
+  status: automated
+  notes: |-
+    Information about the state of the system is stored in etcd.
+    OpenShift has support for enabling etcd encryption [1], which
+    effectively protects the confidentiality and integrity of
+    the cluster's runtime and workload-related information at rest.
+
+    [1] https://docs.openshift.com/container-platform/latest/security/encrypting-etcd.html
+  rules:
+  - api_server_encryption_provider_cipher
+  - api_server_encryption_provider_config
+  description: |-
+    When you enable etcd encryption, the following OpenShift API server and Kubernetes API server resources are encrypted:
+      * Secrets
+      * Config maps
+      * Routes
+      * OAuth access tokens
+      * OAuth authorize tokens
+
+      When you enable etcd encryption, encryption keys are created. These
+      keys are rotated on a weekly basis. You must have these keys in
+      order to restore from an etcd backup.
+
+      1. Modify the APIServer object:
+        $ oc edit apiserver
+      2. Set the encryption field type to aescbc:
+        spec:
+          encryption:
+            type: aescbc
+      3. Save the file to apply the changes. The encryption process
+         starts. It can take 20 minutes or longer for this process to complete,
+         depending on the size of your cluster.
+      4. Verify that etcd encryption was successful.
+      $ oc get openshiftapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="Encrypted")]}{.reason}{"\n"}{.message}{"\n"}'
+
+      The output shows EncryptionCompleted upon successful encryption:
+      EncryptionCompleted
+      All resources encrypted: secrets, configmaps
+  title: >-
+    Encrypting ETCD after install
+- id: encryption-in-transit
+  status: partial
+  notes: |-
+    With IPsec enabled, all network traffic between nodes on the
+    OVN-Kubernetes Container Network Interface (CNI) cluster network
+    travels through an encrypted tunnel.
+
+    IPsec encryption can be enabled only during cluster installation and
+    cannot be disabled after it is enabled.
+
+    For more information on configuring IPSec on OVN, consult the
+    OpenShift documentation:
+      {{{ weblink(link="https://docs.openshift.com/container-platform/4.10/installing/installing_bare_metal/installing-bare-metal-network-customizations.html#modifying-nwoperator-config-startup_installing-bare-metal-network-customizations") }}}
+  rules:
+    ovn_ipsec_enabled
+  description: |-
+    With IPsec enabled, all network Types of network traffic between nodes on the OVN-Kubernetes Container Network Interface (CNI) cluster network travels through an encrypted tunnel.
+
+    Types of network traffic flows encrypted by IPsec:
+
+    With IPsec enabled, only the following network traffic flows between pods are encrypted:
+    * Traffic between pods on different nodes on the cluster network
+    * Traffic from a pod on the host network to a pod on the cluster network
+
+    The following traffic flows are not encrypted:
+    * Traffic between pods on the same node on the cluster network
+    * Traffic between pods on the host network
+    * Traffic from a pod on the cluster network to a pod on the host network
+
+    The encrypted and unencrypted flows are illustrated in this diagram[1].
+
+    Enable IPsec for the OVN-Kubernetes network provider details[2]
+
+    Prerequisites:
+    * Create the install-config.yaml file and complete any modifications to it.
+    * Create the Ignition config files for your cluster.
+
+    Procedure:
+
+    1 - Change to the directory that contains the installation program and create the manifests:
+    $ ./openshift-install create manifests --dir=<installation_directory>
+    2 - Create a stub manifest file for the advanced network configuration that is named cluster-network-03-config.yml in the <installation_directory>/manifests/ directory:
+
+    $ cat <<EOF > <installation_directory>/manifests/cluster-network-03-config.yml
+    apiVersion: operator.openshift.io/v1
+    kind: Network
+    metadata:
+      name: cluster
+    spec:
+    EOF
+
+    3 - Open the cluster-network-03-config.yml file in an editor and specify the advanced network configuration for your cluster, such as in the following examples:
+    Enable IPsec for the OVN-Kubernetes network provider
+
+    apiVersion: operator.openshift.io/v1
+    kind: Network
+    metadata:
+      name: cluster
+    spec:
+      defaultNetwork:
+        ovnKubernetesConfig:
+          ipsecConfig: {}
+
+      [1] https://docs.openshift.com/container-platform/4.10/networking/ovn_kubernetes_network_provider/about-ipsec-ovn.html
+      [2] https://docs.openshift.com/container-platform/4.10/installing/installing_bare_metal/installing-bare-metal-network-customizations.html#modifying-nwoperator-config-startup_installing-bare-metal-network-customizations
+  title: >-
+    Examining Encryption in Transit
