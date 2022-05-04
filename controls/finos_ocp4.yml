@@ -193,3 +193,95 @@ controls:
       [2] https://docs.openshift.com/container-platform/4.10/installing/installing_bare_metal/installing-bare-metal-network-customizations.html#modifying-nwoperator-config-startup_installing-bare-metal-network-customizations
   title: >-
     Examining Encryption in Transit
+- id: authentication
+  status: automated
+  notes: |-
+    To meet the requirements, OpenShift must be configured
+    to use centralized authentication via an IDP. The account
+    inactivity timeout can be either configured per OAuth client
+    as described here:
+    https://docs.openshift.com/container-platform/latest/authentication/configuring-oauth-clients.html#oauth-token-inactivity-timeout_configuring-oauth-clients
+
+    Or globally (this example uses 600s timeout):
+    $ oc patch oauth.config cluster -p '{"spec":{"tokenConfig":{"accessTokenInactivityTimeout": "600s"}}}' --type='merge'
+
+    Note that the global configuration does not change the configuration
+    of the oauthclient objects, so for proper compliance check, both must
+    be audited.
+
+    Also note that prior to OpenShift 4.8, changing the global oauth.config
+    object triggers a rollout of the kube-apiserver which can take up
+    to 15 minutes. You can watch the kube-apiserver rollout with
+    "oc get co kube-apiserver". Once the rollout finishes, the "Progressing"
+    column will say "False".
+  rules:
+  - idp_is_configured
+  - kubeadmin_removed
+  description: |-
+    There are several Related to Authentication and Authorization
+       - Users - The primary entity that interacts with the API Server,
+         Assign permissions to the user by adding roles to the user or groups
+         the user belongs to
+       - Identity - Keeps a record of successful auth attempts from a
+         specific user and identity provider. All data concerning the source
+         of the authentication is stored on the provider.
+       - Service Account - Applications can directly communicate with the API,
+         Service accounts are used in place of sharing user accouts. Groups -
+         Groups contain a set of specific users, users can belong to multiple
+         groups. Permissions can be assigned to multiple users via groups.
+
+    Users are allowed interaction with OpenShift via the Authentication
+    and Authorization Layers, A user makes a request to the API, and the
+    authentication layer authenticates the user. The authorization layer
+    uses RBAC to determin privileges.
+    There are two authentication methods:
+      - OAuth Access Tokens
+      - X.509 Client Certificates
+
+    The Authentication Operator runs an OAuth Service which provide the
+    access tokens to users when they attempt to authenticate to the API. The
+    OAuth Server uses an identity provider to validate the request. OpenShift
+    creates the identity and user resources after a successful login.
+
+    Configurable Identity providers include: HTPAsswd. Keystone, LDAP, GitHub or
+    GitHub Enterprise, OpenID Connect, Google, GitLab and Basic Authentication.
+
+    By default the OpenShift Container Platform creates a cluster administrator
+    kubeadmin after installation which should be removed once authentication
+    is configured.
+
+    $ oc delete secrets kubeadmin -n kube-system
+
+    [1] https://docs.openshift.com/container-platform/4.10/authentication/remove-kubeadmin.html
+  title: >-
+   Understanding Authentication
+- id: authorization
+  status: inherently met
+  notes: |-
+    This control is inherently met through the combination of Role-based
+    Access Control for both user and system accounts by dividing the
+    roles and assigning them via RBAC to the appropriate accounts,
+    plus defaulting to the restricted SCC.
+
+    Documentation on the OpenShift RBAC capabilities can be found at
+    https://docs.openshift.com/container-platform/latest/authentication/using-rbac.html
+    Documentation on the OpenShift SCCs can be found at
+    https://docs.openshift.com/container-platform/latest/authentication/managing-security-context-constraints.html
+  rules: []
+  description: |-
+    After authentication, the OpenShift API request is passed along (with
+    the asserted User info) to the Kubernetes authorization layer (after
+    a visit to the Audit layer). This layer is responsible for ensuring
+    that the user has been granted permissions, by policy, to perform
+    the requested action against the requested resource. Although the
+    Kubernetes authorization layer is pluggable, OpenShift does not allow
+    customization here, and only uses the Role-Based Access Control (RBAC)
+    authorization type Authorization is handled by rules, roles and bindings.
+
+    * Rules - Set of permitted verbs on a set of objects. For example,
+      whether a user or service account can create pods.
+    * Roles - Collections of rules. You can associate, or bind, users and
+      groups to multiple roles.
+    * Bindings - Associations between users and/or groups with a role.
+  title: >-
+   Understanding Authorization
