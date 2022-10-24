@@ -29,7 +29,7 @@ cpes:
   - ocp4-node-on-ovn:
       name: "cpe:/a:redhat:openshift_container_platform_node_on_ovn:4"
       title: "Red Hat OpenShift Container Platform 4 Node on OVN"
-      check_id: installed_app_is_ocp4_node_on_openshift-ovn
+      check_id: installed_app_is_ocp4_node_on_ovn
 
   - ocp4-node-on-sdn:
       name: "cpe:/a:redhat:openshift_container_platform_node_on_sdn:4"

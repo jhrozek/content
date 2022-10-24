@@ -40,7 +40,7 @@
   </ind:yamlfilecontent_object>
 
   <!-- Check for OpenShift Container Platform 4 using specific network type -->
-{{% for network in ["OpenShift-SDN", "OpenShift-OVN"] %}}
+{{% for network in ["OpenShift-SDN"] %}}
   <definition class="inventory" id="installed_app_is_ocp4_node_on_{{{ network|lower }}}" version="1">
     <metadata>
       <title>Red Hat OpenShift Container network 4 on {{{ network }}}</title>
@@ -68,5 +68,45 @@
   </ind:yamlfilecontent_state>
 {{% endfor %}}
 
+
+  <definition class="inventory" id="installed_app_is_ocp4_node_on_ovn" version="1">
+    <metadata>
+      <title>Red Hat OpenShift Container network 4 on OVN</title>
+      <affected family="unix">
+        <platform>Red Hat OpenShift Container network 4 on OVN</platform>
+      </affected>
+      <reference ref_id="cpe:/a:redhat:openshift_container_node_network_on_ovn:4" source="CPE" />
+      <description>The application installed installed on the system is OpenShift version 4 on OVN.</description>
+    </metadata>
+    <criteria operator="AND">
+      <criteria operator="OR">
+        <criterion comment="cluster is OpenShift 4 on OVNKubernetes" test_ref="test_ocp4_node_on_ovnkubernetes" />
+        <criterion comment="cluster is OpenShift 4 on OVNKubernetes" test_ref="test_ocp4_node_on_openshiftovn" />
+      </criteria>
+      <criterion comment="Make sure OCP4 networkstructure/cluster file is present" test_ref="test_file_for_ocp4_node_network"/>
+    </criteria>
+  </definition>
+
+  <ind:yamlfilecontent_test id="test_ocp4_node_on_ovnkubernetes" check="at least one" comment="Find one match" version="1">
+      <ind:object object_ref="object_ocp4_platform_node_network"/>
+      <ind:state state_ref="state_ocp4_on_ovnkubernetes"/>
+  </ind:yamlfilecontent_test>
+
+  <ind:yamlfilecontent_state id="state_ocp4_on_ovnkubernetes" version="1">
+      <ind:value datatype="record">
+          <field name="#" datatype="string" operation="pattern match">^OVNKubernetes$</field>
+      </ind:value>
+  </ind:yamlfilecontent_state>
+
+  <ind:yamlfilecontent_test id="test_ocp4_node_on_openshiftovn" check="at least one" comment="Find one match" version="1">
+      <ind:object object_ref="object_ocp4_platform_node_network"/>
+      <ind:state state_ref="state_ocp4_node_on_openshiftovn"/>
+  </ind:yamlfilecontent_test>
+
+  <ind:yamlfilecontent_state id="state_ocp4_node_on_openshiftovn" version="1">
+      <ind:value datatype="record">
+          <field name="#" datatype="string" operation="pattern match">^OpenShift-OVN$</field>
+      </ind:value>
+  </ind:yamlfilecontent_state>
 
 </def-group>
