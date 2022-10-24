@@ -56,6 +56,7 @@ selections:
     - file_permissions_ovs_conf_db_lock
     - file_permissions_ovs_vswitchd_pid
     - file_permissions_ovsdb_server_pid
+    - file_permissions_ovn_cni_server_sock
   # 1.1.10 Ensure that the Container Network Interface file ownership is set to root:root
     - file_owner_cni_conf
     - file_groupowner_cni_conf
