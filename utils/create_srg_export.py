@@ -427,6 +427,10 @@ def handle_control(product: str, control: ssg.controls.Control, env_yaml: ssg.en
         rows = list()
         for selection in control.selections:
             if selection not in used_rules and selection in control.selected:
+                if selection not in rule_json:
+                    print(f"Unable to find rule {selection}. Did you re-run utils/rule_dir_json.py?")
+                    exit(4)
+
                 rule_object = handle_rule_yaml(product, rule_json[selection]['dir'], env_yaml)
                 row = create_base_row(control, srgs, rule_object)
                 if control.levels is not None:
