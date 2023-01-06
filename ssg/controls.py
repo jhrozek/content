@@ -88,6 +88,9 @@ class Control(ssg.entities.common.SelectionHandler):
         self.fixtext = ""
         self.check = ""
 
+    def __str__(self):
+        return self.id
+
     def __hash__(self):
         """ Controls are meant to be unique, so using the
         ID should suffice"""
