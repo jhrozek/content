@@ -1,0 +1,3 @@
+name: "cpe:/o:rhcos4:rhel:8"
+title: "Operating System is RHCOS4 based on RHEL-8"
+check_id: rhcos4_rhel8
