@@ -7,4 +7,5 @@ controls:
   - directory_access_var_log_kube_audit
   - directory_access_var_log_oauth_audit
   - directory_access_var_log_ocp_audit
+  - audit_rules_suid_privilege_function
   status: inherently met
