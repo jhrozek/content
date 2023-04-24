@@ -221,6 +221,7 @@ def handle_control(product: str, control: ssg.controls.Control, env_yaml: ssg.en
         rows = list()
         for selection in control.selections:
             if selection not in used_rules and selection in control.selected:
+                print("rule for", control.id)
                 rule_object = handle_rule_yaml(product, rule_json[selection]['dir'], env_yaml)
                 row = create_base_row(control, srgs, rule_object)
                 if control.levels is not None:
@@ -261,6 +262,12 @@ def no_selections_row(control, srgs):
     return row
 
 
+def filter_srgids(rule_srgids: str, all_srgids: list) -> str:
+    srgid_list = rule_srgids.split(',')
+    if len(srgid_list) == 0:
+        return rule_srgids
+    return ",".join([ srgid for srgid in srgid_list if srgid in all_srgids ])
+
 def create_base_row(item: ssg.controls.Control, srgs: dict,
                     rule_object: ssg.build_yaml.Rule) -> dict:
     row = dict()
@@ -269,8 +276,11 @@ def create_base_row(item: ssg.controls.Control, srgs: dict,
         print(f"Unable to find SRG {srg_id}. Id in the control must be a valid SRGID.")
         exit(4)
     srg = srgs[srg_id]
+    print("---> SRG", srg)
+    print("---> SRG", srgs.keys())
 
-    row['SRGID'] = rule_object.references.get('srg', srg_id)
+    row['SRGID'] = filter_srgids(rule_object.references.get('srg', srg_id), srgs.keys())
+    print("---> SRGID", row['SRGID'])
     row['CCI'] = rule_object.references.get('disa', srg['cci'])
     row['SRG Requirement'] = srg['title']
     row['SRG VulDiscussion'] = html_plain_text(srg['vuln_discussion'])
