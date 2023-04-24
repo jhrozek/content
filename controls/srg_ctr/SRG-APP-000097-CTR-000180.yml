@@ -4,6 +4,8 @@ controls:
   - medium
   title: All audit records must identify where in the container platform the event
     occurred.
+  rules:
+  - auditd_log_format
   related_rules:
   - audit_profile_set
-  status: inherently met
+  status: pending
