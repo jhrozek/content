@@ -3,14 +3,49 @@ controls:
   levels:
   - medium
   title: Authentication files for the container platform must be protected.
-  status: inherently met
-  artifact_description: |-
-    Supporting evidence is in the following documentation
+  status: manual
+  check: |-
+    The administrator must verify that Openshift is configured with the
+    necessary RBAC access controls.
 
-    https://docs.openshift.com/container-platform/latest/post_installation_configuration/index.html
+    Review the RBAC configuration by running the following commands:
+
+    As the cluster-admin, view the cluster roles and their associated
+    rule sets:
+
+    > oc describe clusterrole.rbac
+
+    Now view the current set of cluster role bindings, which shows the
+    users and groups that are bound to various roles:
+
+    >  oc describe clusterrolebinding.rbac
+
+    Local roles and bindings can be determined using the follow commands:
+
+    > oc describe rolebinding.rbac
+
+    If these results show users with privileged access that do not require
+    that access, this is a finding.
+  fixtext: |-
+    If users or groups exist that are bound to roles they should not have,
+    modify the user or group permissions using the following cluster and
+    local role binding commands:
+
+    * Remove a User from a Cluster RBAC role
+
+    > oc adm policy remove-cluster-role-from-user <role> <username>
+
+    * Remove a Group from a Cluster RBAC role
+
+    > oc adm policy remove-cluster-role-from-group <role> <groupname>
+
+    * Remove a User from a Local RBAC role
+
+    > oc adm policy remove-role-from-user <role> <username>
+
+    * Remove a Group from a Local RBAC role
+
+    > oc adm policy remove-role-from-group <role> <groupname>
+
     https://docs.openshift.com/container-platform/latest/authentication/using-rbac.html
-    https://docs.openshift.com/container-platform/latest/authentication/understanding-identity-provider.html
-  status_justification: |-
-    The OpenShift Container Platform provides RBAC policies and enforcement of those policies out of the box.  Verification of SRG-APP-000340-CTR-000770 will ensure that binding of user and groups to roles provides proper restriction of access to resources. For more information on how RBAC policies work in OpenShift.
 
-    Only users with cluster-admin priviliges are permitted to create, modify, or view platform identity providers stored within the Oauth custom resource defining identity provider configuration(s).

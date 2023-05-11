@@ -4,19 +4,48 @@ controls:
   - high
   title: {{{ full_name }}} runtime must prohibit the instantiation of container
     images without explicit privileged status.
-  status: inherently met
-  artifact_description: |-
-    Supporting evidence is in the following documentation
-    https://docs.openshift.com/container-platform/latest/authentication/using-rbac.html
-  status_justification: |-
-    User's of the OpenShift platform do not directly instantiate
-    a container image. Instead in order to instantiate a container, the user creates
-    a Deployment object with the details of the requested state.  OpenShift will then
-    instantiate the containers inside pods on behalf of the users using a service
-    account. OpenShift employs a robust RBAC policy to allow an administrator to control
-    who has access to create, update, modify container deployments. Thus only user's
-    with the appropriate permissions to a given namespace may create or modify deployment
-    objects.
+  status: manual
+  check: |-
+    The administrator must verify that Openshift is configured with the
+    necessary RBAC access controls.
 
-    See also:
+    Review the RBAC configuration by running the following commands:
+
+    As the cluster-admin, view the cluster roles and their associated
+    rule sets:
+
+    > oc describe clusterrole.rbac
+
+    Now view the current set of cluster role bindings, which shows the
+    users and groups that are bound to various roles:
+
+    >  oc describe clusterrolebinding.rbac
+
+    Local roles and bindings can be determined using the follow commands:
+
+    > oc describe rolebinding.rbac
+
+    If these results show users with privileged access that do not require
+    that access, this is a finding.
+  fixtext: |-
+    If users or groups exist that are bound to roles they should not have,
+    modify the user or group permissions using the following cluster and
+    local role binding commands:
+
+    * Remove a User from a Cluster RBAC role
+
+    > oc adm policy remove-cluster-role-from-user <role> <username>
+
+    * Remove a Group from a Cluster RBAC role
+
+    > oc adm policy remove-cluster-role-from-group <role> <groupname>
+
+    * Remove a User from a Local RBAC role
+
+    > oc adm policy remove-role-from-user <role> <username>
+
+    * Remove a Group from a Local RBAC role
+
+    > oc adm policy remove-role-from-group <role> <groupname>
+
     https://docs.openshift.com/container-platform/latest/authentication/using-rbac.html
