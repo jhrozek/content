@@ -5,7 +5,6 @@ controls:
   title: {{{ full_name }}} must allocate audit record storage capacity in accordance
     with organization-defined audit record storage requirements.
   rules:
-  - partition_for_var_log_kube_apiserver
-  - partition_for_var_log_oauth_apiserver
-  - partition_for_var_log_openshift_apiserver
-  status: not applicable
+  - auditd_log_format
+  - partition_for_var_log_audit
+  status: automated
