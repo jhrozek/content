@@ -4,4 +4,8 @@ controls:
   - medium
   title: {{{ full_name }}} must audit non-local maintenance and diagnostic sessions'
     organization-defined audit events associated with non-local maintenance.
-  status: inherently met
+  status: automated
+  rules:
+  - service_auditd_enabled
+  related_rules:
+  - audit_profile_set
