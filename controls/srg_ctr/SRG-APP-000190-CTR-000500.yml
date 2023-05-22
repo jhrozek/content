@@ -8,4 +8,7 @@ controls:
     of inactivity;'
   status: automated
   rules:
-  - oauthclient_inactivity_timeout
+  - sshd_disable_root_login
+  - sshd_set_idle_timeout
+  - sshd_set_keepalive_0
+  - oauth_or_oauthclient_inactivity_timeout
