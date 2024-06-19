@@ -16,6 +16,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.FRIZBEE_TOKEN }}
         with:
           actions: .github/workflows
-          dockerfiles: ["./Dockerfiles"] # You can specify multiple files or directories
+          dockerfiles: '["./Dockerfiles"]'
           open_pr: true
           fail_on_unpinned: true
