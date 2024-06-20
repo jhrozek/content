@@ -14,7 +14,7 @@ jobs:
       - name: Install Deps
         run: yum install -y cmake make openscap-utils PyYAML libxslt expat xml-common python-jinja2 python-setuptools
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
       - name: Build
         run: |-
           ./build_product \
@@ -42,7 +42,7 @@ jobs:
       - name: Install Deps
         run: zypper install -y git cmake make openscap-utils python3-PyYAML bats python3-pytest python3-pytest-cov python3-Jinja2 python3-setuptools libxslt-tools libxml2-tools libexpat1 libexpat-devel libexpat1 expat ShellCheck
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
       - name: Build
         run: ./build_product alinux2 alinux3 chromium fedora firefox rhcos4 rhel7 rhel8 rhel9 sle12 sle15 ubuntu2004 ubuntu2204 uos20
       - name: Test
@@ -62,7 +62,7 @@ jobs:
       - name: Install deps python
         run: pip3 install ruamel.yaml yamlpath pyyaml==5.4.1
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
       - name: Build
         env:
           ADDITIONAL_CMAKE_OPTIONS: "-DSSG_ANSIBLE_PLAYBOOKS_PER_RULE_ENABLED=ON"
@@ -81,7 +81,7 @@ jobs:
         with:
           apt-get: cmake ninja-build libopenscap8 libxml2-utils expat xsltproc python3-jinja2 python3-yaml python3-setuptools ansible-lint python3-github bats python3-pytest python3-pytest-cov shellcheck
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
       - name: Build
         run: |-
           ./build_product \
@@ -114,7 +114,7 @@ jobs:
       - name: Install deps python
         run: pip install ruamel.yaml yamlpath types-openpyxl types-PyYAML xmldiff
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
       - name: Build
         run: |-
           ./build_product \
@@ -143,7 +143,7 @@ jobs:
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Upload coverage to Code Climate  # Requires: git package
         if: ${{ github.repository == 'ComplianceAsCode/content' }}
-        uses: paambaati/codeclimate-action@v3.0.0
+        uses: paambaati/codeclimate-action@84cea27117a473d605400ca3a97fcef7e433e2d6 # v3.0.0
         env:
           CC_TEST_REPORTER_ID: e67e068471d32b63f8e9561dba8f6a3f84dcc76b05ebfd98e44ced1a91cff854
         with:
@@ -162,7 +162,7 @@ jobs:
       -   name: Install deps python
           run: pip install ruamel.yaml yamlpath types-openpyxl types-PyYAML
       -   name: Checkout
-          uses: actions/checkout@v2
+          uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
       -   name: Build
           run: |-
             ./build_product \
