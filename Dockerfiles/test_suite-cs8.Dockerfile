@@ -1,5 +1,5 @@
 # This Dockerfile is a minimal example for a Centos Stream 8 SSG test suite target container.
-FROM quay.io/centos/centos:stream8
+FROM quay.io/centos/centos:stream8@sha256:20da069d4f8126c4517ee563e6e723d4cbe79ff62f6c4597f753478af91a09a3
 
 ENV AUTH_KEYS=/root/.ssh/authorized_keys
 
