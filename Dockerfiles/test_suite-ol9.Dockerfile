@@ -1,5 +1,5 @@
 # This Dockerfile is a minimal example for an OL9-based SSG test suite target container.
-FROM oraclelinux:9
+FROM index.docker.io/library/oraclelinux:9@sha256:1bc1fc7f5e0fec6fd1e47db5f63b9b35c3f734a5344ea3db81b4a43f116dd443
 
 ENV AUTH_KEYS=/root/.ssh/authorized_keys
 
