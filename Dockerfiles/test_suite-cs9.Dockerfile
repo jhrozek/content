@@ -1,5 +1,5 @@
 # This Dockerfile is a minimal example for a Centos Stream 9 SSG test suite target container.
-FROM quay.io/centos/centos:stream9
+FROM quay.io/centos/centos:stream9@sha256:8edcfab3ba262a926f3f911d5743bd894dce857fc80f74b615b68da3d05f4bde
 
 ENV AUTH_KEYS=/root/.ssh/authorized_keys
 
