@@ -1,4 +1,4 @@
-FROM opensuse/leap:15.2
+FROM index.docker.io/opensuse/leap:15.2@sha256:dfa464ed7bc25fb77ad652d4e722cb0e78fc230425846be10e51dda1f43aa5c9
 
 ENV OSCAP_USERNAME oscap
 ENV OSCAP_DIR content
