@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM index.docker.io/library/ubuntu:22.04@sha256:340d9b015b194dc6e2a13938944e0d016e57b9679963fdeb9ce021daac430221
 
 ENV OSCAP_USERNAME oscap
 ENV OSCAP_DIR content
