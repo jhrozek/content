@@ -1,4 +1,4 @@
-FROM centos:8
+FROM index.docker.io/library/centos:8@sha256:a27fd8080b517143cbbbab9dfb7c8571c40d67d534bbdee55bd6c473f432b177
 
 ENV OSCAP_USERNAME oscap
 ENV OSCAP_DIR content
